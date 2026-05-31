@@ -1,0 +1,15 @@
+_G.AutoBuso = true
+
+spawn(function()
+    while _G.AutoBuso do
+        pcall(function()
+            local player = game.Players.LocalPlayer
+            local char = player.Character
+
+            if char and not char:FindFirstChild("HasBuso") then
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
+            end
+        end)
+        wait(1)
+    end
+end)
