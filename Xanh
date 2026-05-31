@@ -1,15 +1,40 @@
-_G.AutoBuso = true
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local BusoEvent = ReplicatedStorage:WaitForChild("BusoEvent")
 
-spawn(function()
-    while _G.AutoBuso do
-        pcall(function()
-            local player = game.Players.LocalPlayer
-            local char = player.Character
+local function EnableBuso(player)
+	local character = player.Character
+	if not character then return end
 
-            if char and not char:FindFirstChild("HasBuso") then
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
-            end
-        end)
-        wait(1)
-    end
+	if character:FindFirstChild("HasBuso") then
+		return
+	end
+
+	local value = Instance.new("BoolValue")
+	value.Name = "HasBuso"
+	value.Parent = character
+
+	for _, part in pairs(character:GetChildren()) do
+		if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+			part.Color = Color3.fromRGB(20,20,20)
+		end
+	end
+end
+
+game.Players.PlayerAdded:Connect(function(player)
+
+	player.CharacterAdded:Connect(function(character)
+
+		task.spawn(function()
+			while character.Parent do
+
+				if not character:FindFirstChild("HasBuso") then
+					EnableBuso(player)
+				end
+
+				task.wait(1)
+			end
+		end)
+
+	end)
+
 end)
